@@ -6,3 +6,5 @@ Vous trouverez le code exploratoire permettant de sélectionner les données per
 Le pickle **P7.pkl** permet de sauvegarder le résultat de la phase exploratoire pour l'utiliser dans la modélisation et le dashboard.
 
 La présentation powerpoint **P7_presentation_04** est également disponible.
+
+**P7_note_methodologique_05** permet d'accompagner le lecteur non spécialiste vers la compréhension du projet.
