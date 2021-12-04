@@ -1,0 +1,3 @@
+runtime: python38
+entrypoint: gunicorn app:server --timeout 500
+instance_class: F4_1G
