@@ -37,7 +37,7 @@ def slice_df(df):
     
 @st.cache(allow_output_mutation=True)
 def fit_model(dataframe):
-    model = RandomForestClassifier(max_depth=25, min_samples_leaf=1, n_estimators=150)
+    model = RandomForestClassifier(max_depth=20, min_samples_leaf=10, max_features=8)
     model = model.fit(slice_df(dataframe)[0], slice_df(dataframe)[1])
     
     return model
