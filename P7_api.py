@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import NearestNeighbors
 
 
-st.title('ModÃ¨le de scoring pour PrÃªt Ã  dÃ©penser')
+st.title('Modele de scoring pour Pret a  dépenser')
 
 @st.cache
 def read_data(path):
@@ -107,12 +107,12 @@ st.subheader('Identifiant client')
 client_id = st.selectbox("Choisissez un identifiant client", options=df.index)
 st.write("Vous avez choisi le client", client_id)
 
-st.subheader('ProbabilitÃ© de solvabilitÃ©')
+st.subheader('Probabilite de solvabilite')
 st.plotly_chart(proba_pie(client_id))
 
 st.subheader('Informations client et clients similaires')
 df_clients = clients_neighbors_data(slice_df(df)[0], client_id)
 st.dataframe(df_clients)
 
-st.subheader('ExplicabilitÃ© avec Lime')
+st.subheader('Explicabilite avec Lime')
 st.plotly_chart(lime_chart(client_id, slice_df(df)[0]))
