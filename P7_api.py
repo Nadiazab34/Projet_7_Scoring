@@ -2,7 +2,7 @@ import operator
 
 import numpy as np
 import pandas as pd
-import plotly.graph_objs as go
+import matplotlib.pyplot as plt
 import streamlit as st
 from lime.lime_tabular import LimeTabularExplainer
 from sklearn.ensemble import RandomForestClassifier
@@ -71,23 +71,23 @@ def lime_chart(id_client, X):
         values.append(val)
     dat = pd.DataFrame(values, columns=["values"], index=indices)
     dat["positive"] = dat["values"]>0
-    fig = go.Figure([go.Bar(
-                    x=dat["values"],
+    fig = plt.figure(figsize = (10, 5))
+    plt.barh(
+                    width=dat["values"],
                     y=dat.index,
-                    orientation='h',
-                    marker_color=list(dat.positive.map({True: '#e74c3c', False: '#2ecc71'}).values))])
-    return fig
+                    color=dat.positive.map({True: '#e74c3c', False: '#2ecc71'}))
+    st.pyplot(fig)
 
 @st.cache
 def proba_pie(id_client):
     values = df_formatted.loc[id_client]
     values = (values['Solvable'],values['Non Solvable'])
-    fig = go.Figure(data=[go.Pie(labels=['Solvable', "Non Solvable"],
-                        values=values,
-                        marker_colors=["#2ecc71", "#e74c3c"],
-                        hole=.5
-                       )])
-    return fig
+    fig = plt.figure(figsize=(10, 4))
+    plt.pie(values, labels=['Solvable', "Non Solvable"],
+                        colors=["#2ecc71", "#e74c3c"]
+                       )
+
+    st.pyplot(fig)
 
 path = r"C:\Users\user\Downloads\P7.pkl"
 
@@ -108,16 +108,11 @@ client_id = st.selectbox("Choisissez un identifiant client", options=df.index)
 st.write("Vous avez choisi le client", client_id)
 
 st.subheader('Probabilité de solvabilité')
-st.plotly_chart(proba_pie(client_id))
+proba_pie(client_id)
 
 st.subheader('Informations client et clients similaires')
 df_clients = clients_neighbors_data(slice_df(df)[0], client_id)
 st.dataframe(df_clients)
 
 st.subheader('Explicabilité avec Lime')
-st.plotly_chart(lime_chart(client_id, slice_df(df)[0]))
-
-
-
-
-
+lime_chart(client_id, slice_df(df)[0])
