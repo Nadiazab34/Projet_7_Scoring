@@ -89,7 +89,7 @@ def proba_pie(id_client):
                        )])
     return fig
 
-path = r"C:\Users\user\Downloads\P7.pkl"
+path = r"P7.pkl"
 
 st.write("Uploading data ...")
 df = read_data(path)
