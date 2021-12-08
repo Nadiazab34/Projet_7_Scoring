@@ -116,3 +116,9 @@ st.dataframe(df_clients)
 
 st.subheader('Explicabilite avec Lime')
 st.plotly_chart(lime_chart(client_id, slice_df(df)[0]))
+
+def client_info(id_client):
+    URL =  "https://dash-app-334012.ew.r.appspot.com/client/"+id_client
+    r = requests.get(url=URL)
+    data = r.json()
+    return data 
