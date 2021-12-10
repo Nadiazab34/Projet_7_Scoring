@@ -10,3 +10,5 @@ La présentation powerpoint **P7_presentation_04** est également disponible.
 **P7_note_methodologique_05** permet d'accompagner le lecteur non spécialiste vers la compréhension du projet.
 
 L'url de l'API : http://dash-app-334012.ew.r.appspot.com/client/100023
+
+L'url du dashboard : https://my-custom-dash-app.herokuapp.com/
