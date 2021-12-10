@@ -1,4 +1,5 @@
 import operator
+import requests
 
 import numpy as np
 import pandas as pd
@@ -23,10 +24,6 @@ def format_df(df):
     transf = ['AMT_CREDIT', 'AMT_GOODS_PRICE', 'AMT_INCOME_TOTAL']
     for var in transf:
         df[var] = np.exp(df[var]).astype(int)
-    df["SCORING_PROBABILITY"]=scoring_probability(slice_df(df)[0])
-    df["MODEL_PREDICTION"]=model.predict(slice_df(df)[0])
-    df['Solvable'] = df["SCORING_PROBABILITY"]
-    df['Non Solvable']= 1-df["SCORING_PROBABILITY"]
     return df
 
 @st.cache
@@ -39,14 +36,7 @@ def slice_df(df):
 def fit_model(dataframe):
     model = RandomForestClassifier(max_depth=20, min_samples_leaf=10, max_features=8)
     model = model.fit(slice_df(dataframe)[0], slice_df(dataframe)[1])
-    
     return model
-
-@st.cache
-def scoring_probability(X):
-    probas = model.predict_proba(X)
-    probas = [proba[0] for proba in probas]
-    return probas
 
 @st.cache
 def clients_neighbors_data(X, id_client):
@@ -81,13 +71,21 @@ def lime_chart(id_client, X):
 @st.cache
 def proba_pie(id_client):
     values = df_formatted.loc[id_client]
-    values = (values['Solvable'],values['Non Solvable'])
+    values = (client_info(id_client)["payback_probability"],
+              client_info(id_client)["no_payback_probability"])
     fig = go.Figure(data=[go.Pie(labels=['Solvable', "Non Solvable"],
                         values=values,
                         marker_colors=["#2ecc71", "#e74c3c"],
                         hole=.5
                        )])
     return fig
+
+@st.cache
+def client_info(client_id):
+    URL =  "https://dash-app-334012.ew.r.appspot.com/client/"+str(client_id)
+    r = requests.get(url=URL)
+    data = r.json()
+    return data 
 
 path = r"P7.pkl"
 
@@ -107,6 +105,8 @@ st.subheader('Identifiant client')
 client_id = st.selectbox("Choisissez un identifiant client", options=df.index)
 st.write("Vous avez choisi le client", client_id)
 
+st.write('Le score du client est', client_info(client_id)["score"])
+
 st.subheader('Probabilite de solvabilite')
 st.plotly_chart(proba_pie(client_id))
 
@@ -116,9 +116,3 @@ st.dataframe(df_clients)
 
 st.subheader('Explicabilite avec Lime')
 st.plotly_chart(lime_chart(client_id, slice_df(df)[0]))
-
-def client_info(id_client):
-    URL =  "https://dash-app-334012.ew.r.appspot.com/client/"+id_client
-    r = requests.get(url=URL)
-    data = r.json()
-    return data 
